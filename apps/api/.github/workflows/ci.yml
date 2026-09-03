@@ -1,10 +1,8 @@
 name: CI
 
 on:
-  push:
-    branches: [main, dev]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 jobs:
   lint-and-test:
@@ -38,9 +36,12 @@ jobs:
       - name: Install PostgreSQL client
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
+      - name: Run typecheck
+        run: bun run typecheck
+
       - name: Run linter
         run: bun run lint
-
+      
       - name: Wait for Postgres
         run: |
           for i in {1..10}; do
