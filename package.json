@@ -8,5 +8,8 @@
   "peerDependencies": {
     "typescript": "^7"
   },
-  "scripts": {}
+  "scripts": {
+    "dev:api": "bun --filter api dev && bun --filter api db:up",
+    "dev:web": "bun --filter web dev"
+  }
 }
