@@ -1,95 +1,34 @@
-# Bun
-node_modules/
-*.bun
-dist/
-build/
+# dependencies (bun install)
+node_modules
 
-# Environment variables
-.env
-.env.local
-.env.*.local
+# output
+out
+dist
+*.tgz
 
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pino-debug.log*
-lerna-debug.log*
-
-# OS files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-*.swp
-*.swo
-*~
-
-# IDEs
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.idea/
-*.sublime-workspace
-*.sublime-project
-
-# Testing
-coverage/
-.nyc_output/
+# code coverage
+coverage
 *.lcov
 
-# Database
-*.db
-*.db-shm
-*.db-wal
-*.sqlite
-*.sqlite3
-postgres-data/
-pgdata/
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
-# Drizzle
-.drizzle/
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
-# Docker
-docker-data/
-*.pid
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-tempCodeRunnerFile*
-cookies.txt
-
-# Production builds
-.output/
-.vercel/
-.netlify/
-
-# Debug
+# caches
+.eslintcache
+.cache
 *.tsbuildinfo
 
-# Secrets & credentials
-*.key
-*.pem
-*.p12
-*.pfx
-credentials.json
-service-account.json
+# IntelliJ based IDEs
+.idea
 
-# Backup files
-*.backup
-*.bak
-*.old
-
-# Lock files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# Finder (MacOS) folder config
+.DS_Store
