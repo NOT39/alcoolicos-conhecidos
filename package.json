@@ -10,7 +10,10 @@
   },
   "scripts": {
     "dev:api": "bun --filter api dev && bun --filter api db:up",
-    "dev:web": "bun --filter web dev"
+    "dev:web": "bun --filter web dev",
+    "test:api": "bun --filter api test",
+    "lint:api": "bun --filter api lint",
+    "typecheck:api": "bun --filter api typecheck"
   },
   "workspaces": [
     "apps/*"

@@ -7,6 +7,7 @@
     "build": "bun --bun next build",
     "start": "bun --bun next start",
     "lint": "biome check",
+    "typecheck": "tsc --noEdit",
     "format": "biome format --write"
   },
   "dependencies": {

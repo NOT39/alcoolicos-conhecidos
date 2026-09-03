@@ -15,6 +15,13 @@
       "when": 1788470775479,
       "tag": "0001_sudden_ink",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788474000225,
+      "tag": "0002_noisy_maria_hill",
+      "breakpoints": true
     }
   ]
 }
