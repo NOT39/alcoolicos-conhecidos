@@ -10,11 +10,11 @@ import { t } from 'elysia';
  */
 
 export const createGroupSchema = createInsertSchema(groups, {
-  name: t.String({ minLength: 1, maxLength: 255 }),
-  description: t.Optional(t.String({ minLength: 1, maxLength: 2000 }))
+	name: t.String({ minLength: 1, maxLength: 255 }),
+	description: t.Optional(t.String({ minLength: 1, maxLength: 2000 })),
 });
 
 export const updateGroupSchema = createUpdateSchema(groups, {
-  name: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
-  description: t.Optional(t.String({ minLength: 1, maxLength: 200 })),
+	name: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
+	description: t.Optional(t.String({ minLength: 1, maxLength: 200 })),
 });
