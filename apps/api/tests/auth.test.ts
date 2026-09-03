@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'bun:test';
 import { createApp } from '../src/app';
+import { parseJson } from './helpers/json';
+
+type AuthUser = {
+	email: string;
+	name: string;
+};
+
+type AuthBody = {
+	user?: AuthUser;
+	session?: unknown;
+	error?: unknown;
+} | null;
 
 describe('Auth Module', () => {
 	const app = createApp();
@@ -23,10 +35,10 @@ describe('Auth Module', () => {
 
 			expect(response.status).toBe(200);
 
-			const body = await response.json();
-			expect(body.user).toBeDefined();
-			expect(body.user.email).toBe(testEmail);
-			expect(body.user.name).toBe(testName);
+			const body = await parseJson<AuthBody>(response);
+			expect(body?.user).toBeDefined();
+			expect(body?.user?.email).toBe(testEmail);
+			expect(body?.user?.name).toBe(testName);
 		});
 
 		it('POST /api/auth/sign-up/email fails with duplicate email', async () => {
@@ -43,9 +55,9 @@ describe('Auth Module', () => {
 			);
 
 			// Better Auth returns 200 with error in body for some errors
-			const body = await response.json();
+			const body = await parseJson<AuthBody>(response);
 			// Either status is not 200, or there's an error in body
-			expect(response.status !== 200 || body.error !== undefined).toBe(true);
+			expect(response.status !== 200 || body?.error !== undefined).toBe(true);
 		});
 
 		it('POST /api/auth/sign-up/email fails with weak password', async () => {
@@ -61,8 +73,8 @@ describe('Auth Module', () => {
 				}),
 			);
 
-			const body = await response.json();
-			expect(response.status !== 200 || body.error !== undefined).toBe(true);
+			const body = await parseJson<AuthBody>(response);
+			expect(response.status !== 200 || body?.error !== undefined).toBe(true);
 		});
 	});
 
@@ -81,9 +93,9 @@ describe('Auth Module', () => {
 
 			expect(response.status).toBe(200);
 
-			const body = await response.json();
-			expect(body.user).toBeDefined();
-			expect(body.user.email).toBe(testEmail);
+			const body = await parseJson<AuthBody>(response);
+			expect(body?.user).toBeDefined();
+			expect(body?.user?.email).toBe(testEmail);
 		});
 
 		it('POST /api/auth/sign-in/email fails with wrong password', async () => {
@@ -98,8 +110,8 @@ describe('Auth Module', () => {
 				}),
 			);
 
-			const body = await response.json();
-			expect(response.status !== 200 || body.error !== undefined).toBe(true);
+			const body = await parseJson<AuthBody>(response);
+			expect(response.status !== 200 || body?.error !== undefined).toBe(true);
 		});
 
 		it('POST /api/auth/sign-in/email fails with non-existent user', async () => {
@@ -114,8 +126,8 @@ describe('Auth Module', () => {
 				}),
 			);
 
-			const body = await response.json();
-			expect(response.status !== 200 || body.error !== undefined).toBe(true);
+			const body = await parseJson<AuthBody>(response);
+			expect(response.status !== 200 || body?.error !== undefined).toBe(true);
 		});
 	});
 
@@ -148,10 +160,10 @@ describe('Auth Module', () => {
 
 			expect(response.status).toBe(200);
 
-			const body = await response.json();
-			expect(body.user).toBeDefined();
-			expect(body.user.email).toBe(testEmail);
-			expect(body.session).toBeDefined();
+			const body = await parseJson<AuthBody>(response);
+			expect(body?.user).toBeDefined();
+			expect(body?.user?.email).toBe(testEmail);
+			expect(body?.session).toBeDefined();
 		});
 
 		it('GET /api/auth/get-session returns null for unauthenticated user', async () => {
@@ -163,9 +175,9 @@ describe('Auth Module', () => {
 
 			expect(response.status).toBe(200);
 
-			const body = await response.json();
+			const body = await parseJson<AuthBody>(response);
 			// Better Auth returns null directly when no session
-			expect(body === null || body.session === null).toBe(true);
+			expect(body === null || body?.session === null).toBe(true);
 		});
 	});
 
@@ -197,9 +209,9 @@ describe('Auth Module', () => {
 				}),
 			);
 
-			const body = await response.json();
+			const body = await parseJson<AuthBody>(response);
 			// Should fail with invalid token
-			expect(response.status !== 200 || body.error !== undefined).toBe(true);
+			expect(response.status !== 200 || body?.error !== undefined).toBe(true);
 		});
 	});
 
@@ -242,9 +254,9 @@ describe('Auth Module', () => {
 				}),
 			);
 
-			const body = await sessionResponse.json();
+			const body = await parseJson<AuthBody>(sessionResponse);
 			// Better Auth returns null directly when no session
-			expect(body === null || body.session === null).toBe(true);
+			expect(body === null || body?.session === null).toBe(true);
 		});
 	});
 });
