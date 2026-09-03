@@ -1,4 +1,4 @@
-import { posts } from '@/common/db/schema';
+import { groups } from '@/common/db/schema';
 import { createInsertSchema, createUpdateSchema } from 'drizzle-typebox';
 import { t } from 'elysia';
 
@@ -9,12 +9,12 @@ import { t } from 'elysia';
  * @see https://elysiajs.com/integrations/drizzle
  */
 
-export const createPostSchema = createInsertSchema(posts, {
-	title: t.String({ minLength: 1, maxLength: 255 }),
-	content: t.String({ minLength: 1 }),
+export const createGroupSchema = createInsertSchema(groups, {
+  name: t.String({ minLength: 1, maxLength: 255 }),
+  description: t.Optional(t.String({ minLength: 1, maxLength: 2000 }))
 });
 
-export const updatePostSchema = createUpdateSchema(posts, {
-	title: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
-	content: t.Optional(t.String({ minLength: 1 })),
+export const updateGroupSchema = createUpdateSchema(groups, {
+  name: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
+  description: t.Optional(t.String({ minLength: 1, maxLength: 200 })),
 });
