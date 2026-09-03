@@ -3,11 +3,11 @@ import { cors } from '@elysiajs/cors';
 import { swagger } from '@elysiajs/swagger';
 import { authModule } from '@modules/auth';
 import { healthModule } from '@modules/health';
-import { postsModule } from '@modules/posts';
 import { Elysia } from 'elysia';
 import { appLogger } from './common/logger';
 import { authRateLimit, globalRateLimit } from './common/middleware/rate-limiter';
 import { requestLogger } from './common/middleware/request-logger';
+import { groupsModule } from './modules/groups';
 
 /**
  * Application composition root.
@@ -17,100 +17,100 @@ import { requestLogger } from './common/middleware/request-logger';
  * * @see https://elysiajs.com/concepts/plugin.html
  */
 export const createApp = () => {
-	const app = new Elysia()
-		.use(requestLogger)
-		.use(globalRateLimit)
-		.use(
-			cors({
-				origin: env.CORS_ORIGIN,
-				credentials: true,
-			}),
-		)
-		// ---  API Documentation (open at /docs) ---
-		.use(
-			swagger({
-				path: '/docs',
-				documentation: {
-					info: {
-						title: 'Elysia Production API',
-						version: '1.0.0',
-						description:
-							'Production-ready Elysia.js backend with auth, database, and best practices.\n\n' +
-							'Full Better Auth documentation: https://better-auth.com',
-					},
-					tags: [
-						{ name: 'Health', description: 'Health check endpoints' },
-						{
-							name: 'Auth',
-							description: 'Authentication endpoints (Better Auth)',
-						},
-						{
-							name: 'Posts',
-							description: 'Posts CRUD endpoints (reference implementation)',
-						},
-					],
-				},
-				scalarConfig: {
-					theme: 'purple',
-				},
-			}),
-		)
-		.onError(({ code, error, set }) => {
-			const errorMessage = error instanceof Error ? error.message : String(error);
+  const app = new Elysia()
+    .use(requestLogger)
+    .use(globalRateLimit)
+    .use(
+      cors({
+        origin: env.CORS_ORIGIN,
+        credentials: true,
+      }),
+    )
+    // ---  API Documentation (open at /docs) ---
+    .use(
+      swagger({
+        path: '/docs',
+        documentation: {
+          info: {
+            title: 'Elysia Production API',
+            version: '1.0.0',
+            description:
+              'Production-ready Elysia.js backend with auth, database, and best practices.\n\n' +
+              'Full Better Auth documentation: https://better-auth.com',
+          },
+          tags: [
+            { name: 'Health', description: 'Health check endpoints' },
+            {
+              name: 'Auth',
+              description: 'Authentication endpoints (Better Auth)',
+            },
+            {
+              name: 'Posts',
+              description: 'Posts CRUD endpoints (reference implementation)',
+            },
+          ],
+        },
+        scalarConfig: {
+          theme: 'purple',
+        },
+      }),
+    )
+    .onError(({ code, error, set }) => {
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
-			appLogger.error({
-				code,
-				error: errorMessage,
-				stack: env.NODE_ENV === 'development' && error instanceof Error ? error.stack : undefined,
-			});
+      appLogger.error({
+        code,
+        error: errorMessage,
+        stack: env.NODE_ENV === 'development' && error instanceof Error ? error.stack : undefined,
+      });
 
-			if (code === 'NOT_FOUND') {
-				set.status = 404;
-				return { error: 'Route not found' };
-			}
+      if (code === 'NOT_FOUND') {
+        set.status = 404;
+        return { error: 'Route not found' };
+      }
 
-			if (code === 'VALIDATION') {
-				set.status = 400;
+      if (code === 'VALIDATION') {
+        set.status = 400;
 
-				let parsedMessage = errorMessage;
-				try {
-					if (typeof errorMessage === 'string' && errorMessage.startsWith('{')) {
-						parsedMessage = JSON.parse(errorMessage);
-					}
-				} catch {}
+        let parsedMessage = errorMessage;
+        try {
+          if (typeof errorMessage === 'string' && errorMessage.startsWith('{')) {
+            parsedMessage = JSON.parse(errorMessage);
+          }
+        } catch { }
 
-				return {
-					error: 'Validation error',
-					message: parsedMessage,
-				};
-			}
+        return {
+          error: 'Validation error',
+          message: parsedMessage,
+        };
+      }
 
-			set.status = 500;
-			return {
-				error: 'Internal server error',
-				message: env.NODE_ENV === 'development' ? errorMessage : undefined,
-			};
-		})
+      set.status = 500;
+      return {
+        error: 'Internal server error',
+        message: env.NODE_ENV === 'development' ? errorMessage : undefined,
+      };
+    })
 
-		// Root endpoint - API info
-		.get('/', () => ({
-			name: 'Elysia Production API',
-			version: '1.0.0',
-			docs: '/docs',
-			health: '/health',
-		}))
+    // Root endpoint - API info
+    .get('/', () => ({
+      name: 'Elysia Production API',
+      version: '1.0.0',
+      docs: '/docs',
+      health: '/health',
+    }))
 
-		// Feature modules
-		.use(healthModule)
-		.use(postsModule);
+    // Feature modules
+    .use(healthModule)
+    .use(groupsModule);
 
-	if (env.ENABLE_AUTH) {
-		app.use(authRateLimit);
-		app.use(authModule);
-		appLogger.info('[AUTH] Authentication module enabled');
-	} else {
-		appLogger.info('[AUTH] Authentication disabled (ENABLE_AUTH=false)');
-	}
+  if (env.ENABLE_AUTH) {
+    app.use(authRateLimit);
+    app.use(authModule);
+    appLogger.info('[AUTH] Authentication module enabled');
+  } else {
+    appLogger.info('[AUTH] Authentication disabled (ENABLE_AUTH=false)');
+  }
 
-	return app;
+  return app;
 };
