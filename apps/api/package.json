@@ -3,17 +3,6 @@
   "version": "0.0.1",
   "author": "Not",
   "license": "MIT",
-  "keywords": [
-    "elysia",
-    "bun",
-    "typescript",
-    "backend",
-    "api",
-    "boilerplate",
-    "drizzle",
-    "better-auth",
-    "production-ready"
-  ],
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "build": "bun build --target=bun --outdir=./dist src/index.ts",
