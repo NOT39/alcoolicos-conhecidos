@@ -11,5 +11,8 @@
   "scripts": {
     "dev:api": "bun --filter api dev && bun --filter api db:up",
     "dev:web": "bun --filter web dev"
-  }
+  },
+  "workspaces": [
+    "apps/*"
+  ]
 }
