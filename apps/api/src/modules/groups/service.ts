@@ -1,17 +1,10 @@
-import { db } from '@common/db';
-import { groups } from '@common/db/schema';
-import { desc } from 'drizzle-orm';
+import { GroupsRepository } from './repositories/groups.repository';
 
-export async function getAllGroups() {
-	return await db
-		.select({
-			id: groups.id,
-			name: groups.name,
-			description: groups.description,
-			ownerId: groups.ownerId,
-			createdAt: groups.createdAt,
-			updatedAt: groups.updatedAt,
-		})
-		.from(groups)
-		.orderBy(desc(groups.createdAt));
+
+export class GroupsService {
+  constructor(private groupsRepository: GroupsRepository) { }
+
+  async getAll() {
+    return this.groupsRepository.list()
+  }
 }
