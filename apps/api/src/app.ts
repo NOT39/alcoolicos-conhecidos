@@ -1,12 +1,13 @@
 import { env } from '@common/config/env';
 import { cors } from '@elysiajs/cors';
-import { swagger } from '@elysiajs/swagger';
 import { authModule } from '@modules/auth';
 import { healthModule } from '@modules/health';
 import { Elysia } from 'elysia';
 import { appLogger } from './common/logger';
+import { errorHandler } from './common/middleware/error-handler';
 import { authRateLimit, globalRateLimit } from './common/middleware/rate-limiter';
 import { requestLogger } from './common/middleware/request-logger';
+import { swaggerConfig } from './common/plugins/swagger';
 import { groupsModule } from './modules/groups';
 
 /**
@@ -27,70 +28,9 @@ export const createApp = () => {
 			}),
 		)
 		// ---  API Documentation (open at /docs) ---
-		.use(
-			swagger({
-				path: '/docs',
-				documentation: {
-					info: {
-						title: 'Elysia Production API',
-						version: '1.0.0',
-						description:
-							'Production-ready Elysia.js backend with auth, database, and best practices.\n\n' +
-							'Full Better Auth documentation: https://better-auth.com',
-					},
-					tags: [
-						{ name: 'Health', description: 'Health check endpoints' },
-						{
-							name: 'Auth',
-							description: 'Authentication endpoints (Better Auth)',
-						},
-						{
-							name: 'Posts',
-							description: 'Posts CRUD endpoints (reference implementation)',
-						},
-					],
-				},
-				scalarConfig: {
-					theme: 'purple',
-				},
-			}),
-		)
-		.onError(({ code, error, set }) => {
-			const errorMessage = error instanceof Error ? error.message : String(error);
+		.use(swaggerConfig)
 
-			appLogger.error({
-				code,
-				error: errorMessage,
-				stack: env.NODE_ENV === 'development' && error instanceof Error ? error.stack : undefined,
-			});
-
-			if (code === 'NOT_FOUND') {
-				set.status = 404;
-				return { error: 'Route not found' };
-			}
-
-			if (code === 'VALIDATION') {
-				set.status = 400;
-
-				let parsedMessage = errorMessage;
-				try {
-					if (typeof errorMessage === 'string' && errorMessage.startsWith('{')) {
-						parsedMessage = JSON.parse(errorMessage);
-					}
-				} catch {}
-
-				return {
-					error: 'Validation error',
-					message: parsedMessage,
-				};
-			}
-
-			set.status = 500;
-			return {
-				error: 'Internal server error',
-				message: env.NODE_ENV === 'development' ? errorMessage : undefined,
-			};
-		})
+		.use(errorHandler)
 
 		// Root endpoint - API info
 		.get('/', () => ({
