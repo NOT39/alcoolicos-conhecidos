@@ -1,10 +1,9 @@
-import { GroupsRepository } from './repositories/groups.repository';
-
+import type { GroupsRepository } from './repositories/groups.repository';
 
 export class GroupsService {
-  constructor(private groupsRepository: GroupsRepository) { }
+	constructor(private groupsRepository: GroupsRepository) {}
 
-  async getAll() {
-    return this.groupsRepository.list()
-  }
+	async getAll() {
+		return this.groupsRepository.list();
+	}
 }

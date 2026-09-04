@@ -1,5 +1,5 @@
-import { Group } from "@/common/db/schema";
+import type { Group } from '@/common/db/schema';
 
 export interface GroupsRepository {
-  list(): Promise<Group[]>
+	list(): Promise<Group[]>;
 }
