@@ -7,23 +7,24 @@ import { makeGroupsService } from './factories/makeGroupsService';
  *
  * Demonstrates public/protected routes with ownership validation.
  */
-export const groupsModule = withAuth(new Elysia({ prefix: '/api/groups' }))
-	.decorate('groupsService', makeGroupsService())
-	// GET /api/groups - Public (anyone can view)
-	.get(
-		'/',
-		async ({ groupsService }) => {
-			const groups = await groupsService.getAll();
-			return {
-				data: groups,
-				total: groups.length,
-			};
-		},
-		{
-			detail: {
-				tags: ['Groups'],
-				summary: 'Get all groups',
-				description: 'Public endpoint - returns all groups with author info',
-			},
-		},
-	);
+export const groupsModule = new Elysia({ prefix: '/api/groups' })
+  .use(withAuth)
+  .decorate('groupsService', makeGroupsService())
+  // GET /api/groups - Public (anyone can view)
+  .get(
+    '/',
+    async ({ groupsService }) => {
+      const groups = await groupsService.getAll();
+      return {
+        data: groups,
+        total: groups.length,
+      };
+    },
+    {
+      detail: {
+        tags: ['Groups'],
+        summary: 'Get all groups',
+        description: 'Public endpoint - returns all groups with author info',
+      },
+    },
+  );
