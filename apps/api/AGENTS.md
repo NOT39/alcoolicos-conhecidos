@@ -41,7 +41,7 @@ Aliases: preferir `@common/*` e `@modules/*` (não misturar com relativos longos
 
 ## Auth
 
-- Envolver o módulo com `withAuth()` (`src/common/middleware/auth-guard.ts`).
+- Registrar o plugin `withAuth` via `.use(withAuth)` no módulo (`src/common/middleware/auth-guard.ts`).
 - Rota protegida: `{ auth: true }` na definição da rota.
 - Checagem de dono fica no handler (`403` se `ownerId !== user.id`).
 - **Não alterar** `src/common/db/schema/auth.ts` fora do que a Better Auth documentar.

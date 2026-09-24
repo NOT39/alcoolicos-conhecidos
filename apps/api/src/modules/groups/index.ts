@@ -7,7 +7,8 @@ import { makeGroupsService } from './factories/makeGroupsService';
  *
  * Demonstrates public/protected routes with ownership validation.
  */
-export const groupsModule = withAuth(new Elysia({ prefix: '/api/groups' }))
+export const groupsModule = new Elysia({ prefix: '/api/groups' })
+	.use(withAuth)
 	.decorate('groupsService', makeGroupsService())
 	// GET /api/groups - Public (anyone can view)
 	.get(
