@@ -26,6 +26,7 @@
 	},
 	"dependencies": {
 		"@bogeychan/elysia-logger": "^0.1.10",
+		"@elysia/eden": "^1.4.10",
 		"@elysiajs/bearer": "^1.2.0",
 		"@elysiajs/cors": "^1.4.0",
 		"@elysiajs/swagger": "^1.3.1",
